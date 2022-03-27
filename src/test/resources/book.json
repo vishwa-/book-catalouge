@@ -1,0 +1,8 @@
+{
+  "title":"new Book",
+  "isbn":"12344",
+  "publicationDate" : "2019-04-28",
+  "authors" : [
+    {"name" : "author1"}
+  ]
+}
