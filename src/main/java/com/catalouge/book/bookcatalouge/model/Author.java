@@ -5,6 +5,8 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import java.util.List;
 
 @Data
 @Entity
@@ -13,4 +15,6 @@ public class Author {
     @GeneratedValue
     private Long id;
     private String name;
+    @ManyToMany(mappedBy="authors")
+    private List<Book> books;
 }

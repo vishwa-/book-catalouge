@@ -3,10 +3,17 @@ package com.catalouge.book.bookcatalouge.service;
 import com.catalouge.book.bookcatalouge.model.Author;
 import com.catalouge.book.bookcatalouge.model.Book;
 import com.catalouge.book.bookcatalouge.repository.BookRepository;
+import com.sipios.springsearch.SearchCriteria;
+import com.sipios.springsearch.SpecificationsBuilder;
+import com.sipios.springsearch.anotation.SearchSpec;
+import kotlin.collections.CollectionsKt;
+import kotlin.jvm.internal.Reflection;
+import kotlin.reflect.KFunction;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.LocalDate;

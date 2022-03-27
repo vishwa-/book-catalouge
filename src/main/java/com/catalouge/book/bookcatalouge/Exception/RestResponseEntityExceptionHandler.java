@@ -2,6 +2,7 @@ package com.catalouge.book.bookcatalouge.Exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -28,6 +29,14 @@ public class RestResponseEntityExceptionHandler {
         List<FieldError> fieldErrors = result.getFieldErrors();
 
         return processFieldErrors(fieldErrors);
+    }
+    @ExceptionHandler(value={ InvalidDataAccessApiUsageException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorViewModel processValidationError(InvalidDataAccessApiUsageException ex) {
+        log.error("In MethodArgumentNotValidException handler", ex);
+        ErrorViewModel dto = new ErrorViewModel(ErrorConstants.ERR_VALIDATION, "Unable to locate Attribute  with the the given name" );
+        return dto;
     }
     @ExceptionHandler(value={BookNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)

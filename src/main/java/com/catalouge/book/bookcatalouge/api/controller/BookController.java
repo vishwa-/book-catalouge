@@ -1,11 +1,14 @@
 package com.catalouge.book.bookcatalouge.api.controller;
 
+import com.catalouge.book.bookcatalouge.Exception.BookNotFoundException;
 import com.catalouge.book.bookcatalouge.api.dto.BookDTO;
 import com.catalouge.book.bookcatalouge.model.Book;
 import com.catalouge.book.bookcatalouge.service.BookService;
+import com.sipios.springsearch.anotation.SearchSpec;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -38,10 +43,18 @@ public class BookController {
     @GetMapping("book/{id}")
     public BookDTO getBook(@PathVariable Long id) {
         log.info("Get book called with id=" + id);
-//        Book result = bookService.searchBookByTitle().orElseThrow(() ->new BookNotFoundException("Couldnt find a book with id=" + id));
+        Book result = bookService.searchBookByTitle().orElseThrow(() ->new BookNotFoundException("Could not find a book with id=" + id));
+        return convertToDto(result);
 
-        return null;
+    }
 
+    @GetMapping("books")
+    public List<BookDTO> searchBookBy(@SearchSpec Specification<Book> specs) {
+        log.info("Searching book with criteria=" + specs);
+        List<Book> foundBooks = bookService.searchBookBy(specs);
+        return foundBooks.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
     @PutMapping("book")
