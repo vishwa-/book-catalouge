@@ -1,5 +1,6 @@
 package com.catalouge.book.bookcatalouge.api.controller;
 
+import com.catalouge.book.bookcatalouge.Exception.BookNotFoundException;
 import com.catalouge.book.bookcatalouge.model.Author;
 import com.catalouge.book.bookcatalouge.model.Book;
 import com.catalouge.book.bookcatalouge.service.BookService;
@@ -336,4 +337,78 @@ public class BookControllerIntegrationTest {
 
     }
 
+    @Test
+    public void whenDeleteRequestToBookAndValidId_thenCorrectResponse() throws Exception {
+        Author expectedAuthor = new Author();
+        expectedAuthor.setName("J.K. Rowling");
+
+        Book expectedBook = new Book();
+        expectedBook.setId(1L);
+        expectedBook.setAuthors(Collections.singletonList(expectedAuthor));
+        expectedBook.setISBN("1234567890123");
+        expectedBook.setTitle("Harry Potter and the Philosopher’s Stone");
+        expectedBook.setPublicationDate(LocalDate.of(2019, 04, 28));
+
+        when(bookService.addBook(any())).thenReturn(expectedBook);
+        when(bookService.deleteBook(any())).thenReturn(1L);
+        String user = "{\n" +
+                "    \"title\":\"Harry Potter and the Philosopher’s Stone\",\n" +
+                "    \"isbn\":\"1234567890123\",\n" +
+                "    \"publicationDate\" : \"2019-04-28\",\n" +
+                "    \"authors\" : [\n" +
+                "        {\"name\" : \"J.K. Rowling\"} \n" +
+                "    ]\n" +
+                "        \n" +
+                "}";
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/book")
+                        .content(user)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/book/1")
+                        .content(user)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void whenDeleteRequestToBookAndInValidId_thenCorrectResponse() throws Exception {
+        Author expectedAuthor = new Author();
+        expectedAuthor.setName("J.K. Rowling");
+
+        Book expectedBook = new Book();
+        expectedBook.setId(1L);
+        expectedBook.setAuthors(Collections.singletonList(expectedAuthor));
+        expectedBook.setISBN("1234567890123");
+        expectedBook.setTitle("Harry Potter and the Philosopher’s Stone");
+        expectedBook.setPublicationDate(LocalDate.of(2019, 04, 28));
+
+        when(bookService.addBook(any())).thenReturn(expectedBook);
+        when(bookService.deleteBook(any())).thenThrow(new BookNotFoundException("Could not find a book with id=" + 1L));
+        String user = "{\n" +
+                "    \"title\":\"Harry Potter and the Philosopher’s Stone\",\n" +
+                "    \"isbn\":\"1234567890123\",\n" +
+                "    \"publicationDate\" : \"2019-04-28\",\n" +
+                "    \"authors\" : [\n" +
+                "        {\"name\" : \"J.K. Rowling\"} \n" +
+                "    ]\n" +
+                "        \n" +
+                "}";
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/book")
+                        .content(user)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/book/1")
+                        .content(user)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("description").isNotEmpty())
+                .andExpect(jsonPath("description").value("Could not find a book with id=1"));
+
+    }
 }

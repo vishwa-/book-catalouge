@@ -9,10 +9,7 @@ import java.util.Optional;
 public interface BookService {
     Book addBook(Book book);
     Book updateBook(Long id, Book book);
-    Book deleteBook(Long id);
+    Long deleteBook(Long id);
     List<Book> searchBookBy(Specification<Book> specs);
-    Optional<Book> searchBookByTitle();
-    Optional<Book> searchBookByAuthor();
-    Optional<Book> searchBookByISBN();
     Optional<Book> searchBookById(Long id);
 }

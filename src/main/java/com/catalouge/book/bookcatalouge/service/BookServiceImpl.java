@@ -1,5 +1,6 @@
 package com.catalouge.book.bookcatalouge.service;
 
+import com.catalouge.book.bookcatalouge.Exception.BookNotFoundException;
 import com.catalouge.book.bookcatalouge.model.Book;
 import com.catalouge.book.bookcatalouge.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +32,16 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public Book deleteBook(Long id) {
+    public Long deleteBook(Long id) {
         log.info("Delete book called");
-        return null;
+        Book bookToBeDeleted =
+                bookRepository.findById(id)
+                .orElseThrow(
+                        () ->new BookNotFoundException("Could not find a book with id=" + id)
+                );
+
+        bookRepository.deleteById(bookToBeDeleted.getId());
+        return bookToBeDeleted.getId();
     }
 
     @Override
@@ -41,20 +49,6 @@ public class BookServiceImpl implements BookService{
         return bookRepository.findAll(Specification.where(specs));
     }
 
-    @Override
-    public Optional<Book> searchBookByTitle() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Book> searchBookByAuthor() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Book> searchBookByISBN() {
-        return Optional.empty();
-    }
     @Override
     public Optional<Book> searchBookById(Long id) {
         return bookRepository.findById(id);
