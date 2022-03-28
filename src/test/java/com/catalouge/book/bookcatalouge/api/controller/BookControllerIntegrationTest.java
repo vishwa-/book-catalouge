@@ -404,7 +404,7 @@ public class BookControllerIntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/book/1")
                         .content(user)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("description").isNotEmpty())
                 .andExpect(jsonPath("description").value("Could not find a book with id=1"));
