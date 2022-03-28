@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface BookService {
     Book addBook(Book book);
-    Book updateBook();
-    Book deleteBook();
+    Book updateBook(Long id, Book book);
+    Book deleteBook(Long id);
     List<Book> searchBookBy(Specification<Book> specs);
     Optional<Book> searchBookByTitle();
     Optional<Book> searchBookByAuthor();

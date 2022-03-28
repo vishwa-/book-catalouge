@@ -24,13 +24,14 @@ public class BookServiceImpl implements BookService{
     }
 
     @Override
-    public Book updateBook() {
+    public Book updateBook(Long id, Book book) {
         log.info("Update book called");
-        return null;
+        book.setId(id);
+        return bookRepository.save(book);
     }
 
     @Override
-    public Book deleteBook() {
+    public Book deleteBook(Long id) {
         log.info("Delete book called");
         return null;
     }

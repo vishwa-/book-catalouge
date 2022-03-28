@@ -268,4 +268,72 @@ public class BookControllerIntegrationTest {
             .andExpect(jsonPath("$[0].title").value("Harry Potter and the Philosopher’s Stone"));
     }
 
+
+    @Test
+    public void whenUpdateRequestToBookAndValidBook_thenCorrectResponse() throws Exception {
+        Author expectedAuthor = new Author();
+        expectedAuthor.setName("J.K. Rowling");
+
+        Book expectedBook = new Book();
+        expectedBook.setId(1L);
+        expectedBook.setAuthors(Collections.singletonList(expectedAuthor));
+        expectedBook.setISBN("1234567890123");
+        expectedBook.setTitle("Harry Potter and the Philosopher’s Stone");
+        expectedBook.setPublicationDate(LocalDate.of(2019, 04, 28));
+
+        when(bookService.addBook(any())).thenReturn(expectedBook);
+        when(bookService.searchBookBy(any())).thenReturn(Collections.singletonList(expectedBook));
+        String user = "{\n" +
+                "    \"title\":\"Harry Potter and the Philosopher’s Stone\",\n" +
+                "    \"isbn\":\"1234567890123\",\n" +
+                "    \"publicationDate\" : \"2019-04-28\",\n" +
+                "    \"authors\" : [\n" +
+                "        {\"name\" : \"J.K. Rowling\"} \n" +
+                "    ]\n" +
+                "        \n" +
+                "}";
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/book")
+                        .content(user)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/books?search=ISBN:1234567890123 ")
+                        .content(user)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].title").isNotEmpty())
+                .andExpect(jsonPath("$[0].title").value("Harry Potter and the Philosopher’s Stone"));
+
+        String updatedUser = "{\n" +
+                "    \"title\":\"Harry Potter\",\n" +
+                "    \"isbn\":\"1234567890123\",\n" +
+                "    \"publicationDate\" : \"2019-04-28\",\n" +
+                "    \"authors\" : [\n" +
+                "        {\"name\" : \"J.K. Rowling\"} \n" +
+                "    ]\n" +
+                "        \n" +
+                "}";
+        Book updatedExpectedBook = new Book();
+        updatedExpectedBook.setId(1L);
+        updatedExpectedBook.setAuthors(Collections.singletonList(expectedAuthor));
+        updatedExpectedBook.setISBN("1234567890123");
+        updatedExpectedBook.setTitle("Harry Potter");
+        updatedExpectedBook.setPublicationDate(LocalDate.of(2019, 04, 28));
+        when(bookService.updateBook(any(), any())).thenReturn(updatedExpectedBook);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/book/1")
+                        .content(updatedUser)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("title").isNotEmpty())
+                .andExpect(jsonPath("title").value("Harry Potter"));
+
+
+    }
+
 }

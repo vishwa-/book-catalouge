@@ -43,7 +43,7 @@ public class BookController {
     @GetMapping("book/{id}")
     public BookDTO getBook(@PathVariable Long id) {
         log.info("Get book called with id=" + id);
-        Book result = bookService.searchBookByTitle().orElseThrow(() ->new BookNotFoundException("Could not find a book with id=" + id));
+        Book result = bookService.searchBookById(id).orElseThrow(() ->new BookNotFoundException("Could not find a book with id=" + id));
         return convertToDto(result);
 
     }
@@ -57,11 +57,12 @@ public class BookController {
                 .collect(Collectors.toList());
     }
 
-    @PutMapping("book")
-    public BookDTO updateBook() {
-        log.info("update book called");
-        return null;
-
+    @PutMapping("book/{id}")
+    public BookDTO updateBook(@PathVariable Long id, @Valid @RequestBody BookDTO bookDTO) {
+        log.info("update book called id=" + id);
+        Book book = convertToEntity(bookDTO);
+        Book result = bookService.updateBook(id, book);
+        return convertToDto(result);
     }
 
 
