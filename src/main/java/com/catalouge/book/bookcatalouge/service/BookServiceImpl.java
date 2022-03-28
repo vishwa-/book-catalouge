@@ -6,8 +6,10 @@ import com.catalouge.book.bookcatalouge.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.jms.Queue;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,11 +18,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService{
 
+    private final JmsTemplate jmsTemplate;
+    private final Queue queue;
     private final BookRepository bookRepository;
     @Override
     public Book addBook(Book book) {
         log.info("Add book service called with book={}", book);
         Book savedBook = bookRepository.save(book);
+        jmsTemplate.convertAndSend(queue, "Book Added with id=" + savedBook.getId());
         return savedBook;
     }
 
@@ -28,7 +33,9 @@ public class BookServiceImpl implements BookService{
     public Book updateBook(Long id, Book book) {
         log.info("Update book called");
         book.setId(id);
-        return bookRepository.save(book);
+        Book updatedBook = bookRepository.save(book);
+        jmsTemplate.convertAndSend(queue, "Book Updated with id=" + updatedBook.getId());
+        return updatedBook;
     }
 
     @Override
@@ -41,6 +48,7 @@ public class BookServiceImpl implements BookService{
                 );
 
         bookRepository.deleteById(bookToBeDeleted.getId());
+        jmsTemplate.convertAndSend(queue, "Book Deleted with id=" + id);
         return bookToBeDeleted.getId();
     }
 

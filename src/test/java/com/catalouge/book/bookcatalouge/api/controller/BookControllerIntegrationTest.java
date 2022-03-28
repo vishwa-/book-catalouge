@@ -13,7 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -55,7 +54,7 @@ public class BookControllerIntegrationTest {
         expectedBook.setAuthors(Collections.singletonList(expectedAuthor));
         expectedBook.setISBN("1234567890123");
         expectedBook.setTitle("Harry Potter and the Philosopher’s Stone");
-        expectedBook.setPublicationDate(LocalDate.of(2019, 04, 28));
+        expectedBook.setPublicationDate(LocalDate.of(2019, 4, 28));
 
         when(bookService.addBook(any())).thenReturn(expectedBook);
         String user = "{\n" +
@@ -239,7 +238,7 @@ public class BookControllerIntegrationTest {
         expectedBook.setAuthors(Collections.singletonList(expectedAuthor));
         expectedBook.setISBN("1234567890123");
         expectedBook.setTitle("Harry Potter and the Philosopher’s Stone");
-        expectedBook.setPublicationDate(LocalDate.of(2019, 04, 28));
+        expectedBook.setPublicationDate(LocalDate.of(2019, 4, 28));
 
         when(bookService.addBook(any())).thenReturn(expectedBook);
         when(bookService.searchBookBy(any())).thenReturn(Collections.singletonList(expectedBook));
@@ -280,7 +279,7 @@ public class BookControllerIntegrationTest {
         expectedBook.setAuthors(Collections.singletonList(expectedAuthor));
         expectedBook.setISBN("1234567890123");
         expectedBook.setTitle("Harry Potter and the Philosopher’s Stone");
-        expectedBook.setPublicationDate(LocalDate.of(2019, 04, 28));
+        expectedBook.setPublicationDate(LocalDate.of(2019, 4, 28));
 
         when(bookService.addBook(any())).thenReturn(expectedBook);
         when(bookService.searchBookBy(any())).thenReturn(Collections.singletonList(expectedBook));
@@ -323,7 +322,7 @@ public class BookControllerIntegrationTest {
         updatedExpectedBook.setAuthors(Collections.singletonList(expectedAuthor));
         updatedExpectedBook.setISBN("1234567890123");
         updatedExpectedBook.setTitle("Harry Potter");
-        updatedExpectedBook.setPublicationDate(LocalDate.of(2019, 04, 28));
+        updatedExpectedBook.setPublicationDate(LocalDate.of(2019, 4, 28));
         when(bookService.updateBook(any(), any())).thenReturn(updatedExpectedBook);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/book/1")
@@ -347,7 +346,7 @@ public class BookControllerIntegrationTest {
         expectedBook.setAuthors(Collections.singletonList(expectedAuthor));
         expectedBook.setISBN("1234567890123");
         expectedBook.setTitle("Harry Potter and the Philosopher’s Stone");
-        expectedBook.setPublicationDate(LocalDate.of(2019, 04, 28));
+        expectedBook.setPublicationDate(LocalDate.of(2019, 4, 28));
 
         when(bookService.addBook(any())).thenReturn(expectedBook);
         when(bookService.deleteBook(any())).thenReturn(1L);
@@ -383,7 +382,7 @@ public class BookControllerIntegrationTest {
         expectedBook.setAuthors(Collections.singletonList(expectedAuthor));
         expectedBook.setISBN("1234567890123");
         expectedBook.setTitle("Harry Potter and the Philosopher’s Stone");
-        expectedBook.setPublicationDate(LocalDate.of(2019, 04, 28));
+        expectedBook.setPublicationDate(LocalDate.of(2019, 4, 28));
 
         when(bookService.addBook(any())).thenReturn(expectedBook);
         when(bookService.deleteBook(any())).thenThrow(new BookNotFoundException("Could not find a book with id=" + 1L));
